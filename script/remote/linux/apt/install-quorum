@@ -6,10 +6,10 @@
 set -e
 
 quorum_url='https://github.com/Consensys/quorum.git'
-quorum_checkout='master'
+quorum_checkout='919800f019cc5d2b931b5cd81600640a8e7cd444'
 
 istanbul_url='https://github.com/ConsenSys/istanbul-tools.git'
-istanbul_checkout='master'
+istanbul_checkout='1b927b94fff0b24ab683dc76ab73ada5d283c0bb'
 
 if ! command -v 'sudo' > '/dev/null' ; then
     echo "Cannot find command 'sudo'" >&2
