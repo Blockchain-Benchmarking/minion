@@ -28,6 +28,12 @@ if [ ! -e 'install' ] ; then
     mkdir 'install'
 fi
 
+# Remove already installed solidity if already there.
+#
+if [ -e 'install/solidity' ] ; then
+    sudo rm -rf 'install/solidity'
+fi
+
 # Clone Solidity from the official repository and build it.
 #
 git clone --recursive "${solidity_url}" 'install/solidity'
