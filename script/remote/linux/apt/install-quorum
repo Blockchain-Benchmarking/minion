@@ -28,7 +28,7 @@ fi
 
 # Remove already installed quorum if already there.
 #
-if [ ! -e 'install/quorum' ] ; then
+if [ -e 'install/quorum' ] ; then
     rm -rf 'install/quorum'
 fi
 
