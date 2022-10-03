@@ -26,6 +26,12 @@ if [ ! -e 'install' ] ; then
     mkdir 'install'
 fi
 
+# Remove already installed quorum if already there.
+#
+if [ ! -e 'install/quorum' ] ; then
+    rm -rf 'install/quorum'
+fi
+
 # Clone Quorum from the official repository and build it.
 #
 git clone "${quorum_url}" 'install/quorum'
