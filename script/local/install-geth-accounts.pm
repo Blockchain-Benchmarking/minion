@@ -16,6 +16,7 @@ my $RUNNER = $PARAMS{RUNNER};
 my $PRIVATE = $ENV{MINION_PRIVATE};
 my $KEYS_TXT_PATH = $PRIVATE . '/accounts.txt';
 my $KEYS_JSON_PATH = $PRIVATE . '/accounts.json';
+my $KEYS_YAML_PATH = $PRIVATE . '/accounts.yaml';
 
 my ($number, $from, @err);
 my ($pgrp, $proc);
@@ -83,6 +84,37 @@ sub generate_json_accounts
     close($wfh);
 }
 
+sub generate_yaml_accounts
+{
+    my ($txtpath, $yamlpath) = @_;
+    my ($rfh, $wfh, $line, $address, $private);
+
+    if (!open($rfh, '<', $txtpath)) {
+	die ("cannot read '$txtpath' : $!");
+    }
+
+    if (!open($wfh, '>', $yamlpath)) {
+	die ("cannot write '$yamlpath' : $!");
+    }
+
+    while (defined($line = <$rfh>)) {
+	chomp($line);
+
+	if ($line !~ /^([0-9a-f]+):([0-9a-f]+)$/) {
+	    die ("accounts file '$txtpath' must be in format " .
+		 "'hexaddress:hexprivate");
+	}
+
+	($address, $private) = ($1, $2);
+
+        printf($wfh "- address: \"%s\"\n", $address);
+	printf($wfh "  private: \"%s\"\n", $private);
+    }
+
+    close($rfh);
+    close($wfh);
+}
+
 sub import_accounts
 {
     my ($from, $number) = @_;
@@ -109,6 +141,7 @@ sub import_accounts
     }
 
     generate_json_accounts($from, $KEYS_JSON_PATH);
+    generate_yaml_accounts($from, $KEYS_YAML_PATH);
 
     $FLEET->execute([ 'mkdir', 'install' ], STDERRS => '/dev/null')->wait();
     $FLEET->execute(
@@ -135,6 +168,14 @@ sub import_accounts
 	);
     if (grep { $_->exitstatus() != 0 } $pgrp->waitall()) {
 	die ("cannot send json accounts on workers");
+    }
+
+    $pgrp = $FLEET->send(
+	[ $KEYS_YAML_PATH ],
+	TARGETS => 'install/geth-accounts/accounts.yaml'
+	);
+    if (grep { $_->exitstatus() != 0 } $pgrp->waitall()) {
+	die ("cannot send yaml accounts on workers");
     }
 
     return 1;

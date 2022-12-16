@@ -19,13 +19,14 @@ use Minion::StaticFleet;
 
 my $PROGNAME = 'minion';
 
-my $PREPARE_BASE = '*ubuntu*20.04*amd64*server*';
+my $PREPARE_BASE =
+    'ubuntu/images/hvm-ssd/ubuntu-focal-20.04*amd64-server-20221014';
 my $PREPARE_DURATION = 7200;
-my $PREPARE_DESCRIPTION = "Benchmark image for OSDI'22";
+my $PREPARE_DESCRIPTION = "Image for Diablo Benchmark";
 my $PREPARE_DISK = 32;
 my $PREPARE_REGION = 'eu-central-1';
 my $PREPARE_KEY = 'default';
-my $PREPARE_NAME = 'minion-avalanche-solana';
+my $PREPARE_NAME = 'diablo-image';
 my $PREPARE_SIZE = 10;
 my $PREPARE_SECGROUP = 'default';
 my $PREPARE_TYPE = 'c5.9xlarge';
@@ -69,7 +70,7 @@ my @PREPARE_INSTALLS = (
 );
 
 
-my $BOOT_IMAGE    = $PREPARE_NAME;
+my $BOOT_IMAGE    = $PREPARE_BASE;
 my $BOOT_USER     = $PREPARE_USER;
 my $BOOT_KEY      = $PREPARE_KEY;
 my $BOOT_SIZE     = 5;
